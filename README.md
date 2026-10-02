@@ -1,8 +1,8 @@
-# oops-proof
+# You Shall Not Pass
 
 ![You Shall Not Pass: a guardrail for AI coding agents](docs/banner.jpg)
 
-A personal harness for AI coding agents. The skill inside is named `you-shall-not-pass`.
+A guardrail for AI coding agents.
 
 **What it does for you:** when you ask an AI coding agent to "fix the footer" or "upload
 it", the agent works on its own branch and opens a pull request instead of changing the

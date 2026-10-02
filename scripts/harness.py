@@ -418,7 +418,7 @@ def hook_response(result, host):
         else:
             d = 'deny'
             result = dict(result, reason=result['reason'] + ' Codex PreToolUse cannot ask. Stop and use a human-controlled terminal after reviewing the files; do not retry via another tool.')
-    return {'hookSpecificOutput': {'hookEventName': 'PreToolUse', 'permissionDecision': d, 'permissionDecisionReason': 'Personal harness: ' + result['reason']}}
+    return {'hookSpecificOutput': {'hookEventName': 'PreToolUse', 'permissionDecision': d, 'permissionDecisionReason': 'You Shall Not Pass: ' + result['reason']}}
 
 
 def pre_commit(policy):
@@ -485,12 +485,12 @@ def main():
         text = sys.stdin.read() if args.mode == 'pre-push' else ''
         result = pre_commit(policy) if args.mode == 'pre-commit' else pre_push(policy, text)
         if result['decision'] != 'allow':
-            print('Blocked by personal harness: ' + result['reason'], file=sys.stderr)
+            print('Blocked by You Shall Not Pass: ' + result['reason'], file=sys.stderr)
             return 1
         return run_repo_hook(args.mode, args.hook_args, text)
     except Exception:
         # Hook stderr must not disclose event contents, commands, credentials or raw parser errors.
-        print('Blocked by personal harness: validation or inspection failed. Run the diagnostic; do not bypass this check.', file=sys.stderr)
+        print('Blocked by You Shall Not Pass: validation or inspection failed. Run the diagnostic; do not bypass this check.', file=sys.stderr)
         return 2
 
 

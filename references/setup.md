@@ -45,7 +45,7 @@ Prefer a repository-specific installation:
 python3 scripts/install.py --repo /absolute/path/to/project
 ```
 
-The installer copies the package to `~/.personal-harness`, installs its Python dependency
+The installer copies the package to `~/.you-shall-not-pass`, installs its Python dependency
 in that directory's `.venv`, validates the policy, and sets only the selected repository's
 `core.hooksPath`. It stops if a different effective hooksPath or an existing destination
 needs migration. Nothing is silently replaced. Dependency installation needs network
@@ -70,8 +70,8 @@ Inspect existing configuration first; do not remove someone else's hook configur
 
 The installer generates absolute-path snippets in:
 
-- `~/.personal-harness/integrations/claude.generated.json`
-- `~/.personal-harness/integrations/codex.generated.json`
+- `~/.you-shall-not-pass/integrations/claude.generated.json`
+- `~/.you-shall-not-pass/integrations/codex.generated.json`
 
 Merge the relevant `hooks` entries into the existing configuration without replacing
 other hooks. Example snippets are also included in `integrations/`; adjust their
@@ -105,7 +105,7 @@ Windsurf are not certified for this version. Do not claim they are active protec
 ## 5. Verify the installation
 
 ```sh
-~/.personal-harness/.venv/bin/python ~/.personal-harness/scripts/doctor.py --repo /project
+~/.you-shall-not-pass/.venv/bin/python ~/.you-shall-not-pass/scripts/doctor.py --repo /project
 ```
 
 The diagnostic checks policy validity, effective Git hooksPath, executable entry points,

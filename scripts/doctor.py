@@ -34,7 +34,7 @@ def main():
                 report['current_branch_protected'] = not branch or branch in protected
             except harness.GuardError:
                 report['base_branch_resolved'] = False
-        with tempfile.TemporaryDirectory(prefix='personal-harness-doctor-') as folder:
+        with tempfile.TemporaryDirectory(prefix='you-shall-not-pass-doctor-') as folder:
             env = os.environ.copy()
             env.update(GIT_CONFIG_GLOBAL=os.devnull, GIT_CONFIG_NOSYSTEM='1')
             subprocess.run(['git', 'init', '-q', '--initial-branch=main', folder], env=env, check=True)
