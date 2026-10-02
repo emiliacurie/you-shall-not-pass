@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Personal harness policy v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "protected_branches",
+    "actions"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "const": 1
+    },
+    "protected_branches": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "include_default",
+        "additional"
+      ],
+      "properties": {
+        "include_default": {
+          "type": "boolean"
+        },
+        "additional": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "actions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "commit_to_protected_branch",
+        "push_to_protected_branch",
+        "merge_into_protected_branch",
+        "edit_on_protected_branch",
+        "force_push",
+        "delete_remote_branch",
+        "skip_checks",
+        "commit_env_file",
+        "commit_detected_secret",
+        "discard_unsaved_work",
+        "rewrite_history"
+      ],
+      "properties": {
+        "commit_to_protected_branch": {
+          "enum": [
+            "deny",
+            "allow"
+          ]
+        },
+        "push_to_protected_branch": {
+          "enum": [
+            "deny",
+            "allow"
+          ]
+        },
+        "merge_into_protected_branch": {
+          "enum": [
+            "deny",
+            "allow"
+          ]
+        },
+        "edit_on_protected_branch": {
+          "enum": [
+            "deny",
+            "allow"
+          ]
+        },
+        "force_push": {
+          "enum": [
+            "deny",
+            "allow"
+          ]
+        },
+        "delete_remote_branch": {
+          "enum": [
+            "deny",
+            "allow"
+          ]
+        },
+        "skip_checks": {
+          "enum": [
+            "deny",
+            "allow"
+          ]
+        },
+        "commit_env_file": {
+          "enum": [
+            "deny",
+            "allow"
+          ]
+        },
+        "commit_detected_secret": {
+          "enum": [
+            "deny",
+            "allow"
+          ]
+        },
+        "discard_unsaved_work": {
+          "enum": [
+            "deny",
+            "require_scoped_approval"
+          ]
+        },
+        "rewrite_history": {
+          "enum": [
+            "deny",
+            "require_scoped_approval"
+          ]
+        }
+      }
+    }
+  }
+}

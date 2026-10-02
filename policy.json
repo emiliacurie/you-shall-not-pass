@@ -1,0 +1,21 @@
+{
+  "$schema": "./policy.schema.json",
+  "version": 1,
+  "protected_branches": {
+    "include_default": true,
+    "additional": ["main", "master", "develop", "production", "release"]
+  },
+  "actions": {
+    "commit_to_protected_branch": "deny",
+    "push_to_protected_branch": "deny",
+    "merge_into_protected_branch": "deny",
+    "edit_on_protected_branch": "deny",
+    "force_push": "deny",
+    "delete_remote_branch": "deny",
+    "skip_checks": "deny",
+    "commit_env_file": "deny",
+    "commit_detected_secret": "deny",
+    "discard_unsaved_work": "require_scoped_approval",
+    "rewrite_history": "require_scoped_approval"
+  }
+}

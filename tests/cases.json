@@ -1,0 +1,416 @@
+[
+  {
+    "id": "read",
+    "branch": "feature/test",
+    "command": "git status --short",
+    "expected": "allow"
+  },
+  {
+    "id": "read_chain",
+    "branch": "main",
+    "command": "git status && git diff",
+    "expected": "allow"
+  },
+  {
+    "id": "example_text",
+    "branch": "main",
+    "command": "echo \"git push origin main\"",
+    "expected": "allow"
+  },
+  {
+    "id": "commit_feature",
+    "branch": "feature/test",
+    "command": "git commit -m \"Normal save\"",
+    "expected": "allow"
+  },
+  {
+    "id": "commit_main",
+    "branch": "main",
+    "command": "git commit -m update",
+    "expected": "deny"
+  },
+  {
+    "id": "push_main",
+    "branch": "feature/test",
+    "command": "git push origin HEAD:main",
+    "expected": "deny"
+  },
+  {
+    "id": "push_full_ref",
+    "branch": "feature/test",
+    "command": "git push origin HEAD:refs/heads/main",
+    "expected": "deny"
+  },
+  {
+    "id": "push_feature",
+    "branch": "feature/test",
+    "command": "git push -u origin feature/test",
+    "expected": "allow"
+  },
+  {
+    "id": "force_lease",
+    "branch": "feature/test",
+    "command": "git push --force-with-lease origin feature/test",
+    "expected": "deny"
+  },
+  {
+    "id": "force_refspec",
+    "branch": "feature/test",
+    "command": "git push origin +HEAD:feature/test",
+    "expected": "deny"
+  },
+  {
+    "id": "delete_ref",
+    "branch": "feature/test",
+    "command": "git push origin :feature/test",
+    "expected": "deny"
+  },
+  {
+    "id": "implicit_push",
+    "branch": "feature/test",
+    "command": "git push",
+    "expected": "deny"
+  },
+  {
+    "id": "all_push",
+    "branch": "feature/test",
+    "command": "git push --all origin",
+    "expected": "deny"
+  },
+  {
+    "id": "merge_main",
+    "branch": "main",
+    "command": "git merge --ff-only feature/test",
+    "expected": "deny"
+  },
+  {
+    "id": "merge_into_feature",
+    "branch": "feature/test",
+    "command": "git merge origin/main",
+    "expected": "allow"
+  },
+  {
+    "id": "cleanup",
+    "branch": "feature/test",
+    "command": "git restore -- readme.txt",
+    "expected": "require_scoped_approval"
+  },
+  {
+    "id": "reset",
+    "branch": "feature/test",
+    "command": "git reset --hard",
+    "expected": "require_scoped_approval"
+  },
+  {
+    "id": "clean",
+    "branch": "feature/test",
+    "command": "git clean -fd",
+    "expected": "require_scoped_approval"
+  },
+  {
+    "id": "dry_cleanup",
+    "branch": "feature/test",
+    "command": "git clean -n",
+    "expected": "allow"
+  },
+  {
+    "id": "shell_delete",
+    "branch": "feature/test",
+    "command": "rm -- draft.txt",
+    "expected": "require_scoped_approval"
+  },
+  {
+    "id": "branch_delete",
+    "branch": "feature/test",
+    "command": "git branch -D old",
+    "expected": "require_scoped_approval"
+  },
+  {
+    "id": "rebase",
+    "branch": "feature/test",
+    "command": "git rebase main",
+    "expected": "require_scoped_approval"
+  },
+  {
+    "id": "no_verify",
+    "branch": "feature/test",
+    "command": "git commit --no-verify -m update",
+    "expected": "deny"
+  },
+  {
+    "id": "short_no_verify",
+    "branch": "feature/test",
+    "command": "git commit -nm update",
+    "expected": "deny"
+  },
+  {
+    "id": "short_all",
+    "branch": "feature/test",
+    "command": "git commit -am update",
+    "expected": "deny"
+  },
+  {
+    "id": "override",
+    "branch": "feature/test",
+    "command": "git -c core.hooksPath=/dev/null commit -m update",
+    "expected": "deny"
+  },
+  {
+    "id": "compound_switch",
+    "branch": "main",
+    "command": "git switch -c work && git commit -m update",
+    "expected": "deny"
+  },
+  {
+    "id": "quoted_branch_exemption",
+    "branch": "main",
+    "command": "echo \"git switch -c work\"; git commit -m update",
+    "expected": "deny"
+  },
+  {
+    "id": "return_to_main",
+    "branch": "feature/test",
+    "command": "git switch main && git commit -m update",
+    "expected": "deny"
+  },
+  {
+    "id": "wrapped",
+    "branch": "feature/test",
+    "command": "bash -c \"git push origin main\"",
+    "expected": "deny"
+  },
+  {
+    "id": "read_branch",
+    "branch": "feature/test",
+    "command": "git branch --show-current",
+    "expected": "allow"
+  },
+  {
+    "id": "read_default",
+    "branch": "feature/test",
+    "command": "git symbolic-ref --short refs/remotes/origin/HEAD",
+    "expected": "allow"
+  },
+  {
+    "id": "new_branch",
+    "branch": "main",
+    "command": "git switch -c feature/new",
+    "expected": "allow"
+  },
+  {
+    "id": "force_branch",
+    "branch": "main",
+    "command": "git switch -C feature/new",
+    "expected": "require_scoped_approval"
+  },
+  {
+    "id": "env_staging",
+    "branch": "feature/test",
+    "command": "git add .env",
+    "expected": "deny"
+  },
+  {
+    "id": "normal_staging",
+    "branch": "feature/test",
+    "command": "git add readme.txt",
+    "expected": "allow"
+  },
+  {
+    "id": "fetch_local_ref",
+    "branch": "feature/test",
+    "command": "git fetch . feature/test:main",
+    "expected": "deny"
+  },
+  {
+    "id": "fetch_normal",
+    "branch": "feature/test",
+    "command": "git fetch origin",
+    "expected": "allow"
+  },
+  {
+    "id": "combined_switch",
+    "branch": "feature/test",
+    "command": "git switch -fC main HEAD~1",
+    "expected": "deny"
+  },
+  {
+    "id": "abbreviated_discard",
+    "branch": "feature/test",
+    "command": "git switch --discard main",
+    "expected": "deny"
+  },
+  {
+    "id": "substitution",
+    "branch": "feature/test",
+    "command": "echo \"$(git reset --hard)\"",
+    "expected": "deny"
+  },
+  {
+    "id": "backticks",
+    "branch": "feature/test",
+    "command": "echo `git reset --hard`",
+    "expected": "deny"
+  },
+  {
+    "id": "env_prefix",
+    "branch": "main",
+    "command": "GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=/dev/null git commit -m test",
+    "expected": "deny"
+  },
+  {
+    "id": "amend_main",
+    "branch": "main",
+    "command": "git commit --amend -m update",
+    "expected": "deny"
+  },
+  {
+    "id": "implicit_fetch",
+    "branch": "feature/test",
+    "command": "git fetch",
+    "expected": "deny"
+  },
+  {
+    "id": "implicit_pull",
+    "branch": "feature/test",
+    "command": "git pull --ff-only",
+    "expected": "deny"
+  },
+  {
+    "id": "negated_dry_run",
+    "branch": "feature/test",
+    "command": "git clean -n --no-dry-run -f",
+    "expected": "require_scoped_approval"
+  },
+  {
+    "id": "delete_default_abbrev",
+    "branch": "feature/test",
+    "command": "git symbolic-ref --del refs/remotes/origin/HEAD",
+    "expected": "deny"
+  },
+  {
+    "id": "pull_explicit",
+    "branch": "feature/test",
+    "command": "git pull --ff-only origin",
+    "expected": "allow"
+  },
+  {
+    "id": "multiline_message",
+    "branch": "feature/test",
+    "command": "git commit -m \"Save footer\n\nCo-Authored-By: Agent <agent@example.invalid>\"",
+    "expected": "allow"
+  },
+  {
+    "id": "heredoc_message",
+    "branch": "feature/test",
+    "command": "git commit -m \"$(cat <<'EOF'\nSave footer\n\nCo-Authored-By: Agent <agent@example.invalid>\nEOF\n)\"",
+    "expected": "allow"
+  },
+  {
+    "id": "heredoc_message_main",
+    "branch": "main",
+    "command": "git commit -m \"$(cat <<'EOF'\nSave footer\nEOF\n)\"",
+    "expected": "deny"
+  },
+  {
+    "id": "heredoc_early_end",
+    "branch": "feature/test",
+    "command": "git commit -m \"$(cat <<'EOF'\nSave\nEOF\ngit push origin main\nEOF\n)\"",
+    "expected": "deny"
+  },
+  {
+    "id": "comment_then_newline",
+    "branch": "feature/test",
+    "command": "git status # look\ngit push origin main",
+    "expected": "deny"
+  },
+  {
+    "id": "newline_reads",
+    "branch": "main",
+    "command": "git status\ngit diff",
+    "expected": "allow"
+  },
+  {
+    "id": "newline_switch_commit",
+    "branch": "main",
+    "command": "git switch -c work\ngit commit -m update",
+    "expected": "deny"
+  },
+  {
+    "id": "mixed_read_chain",
+    "branch": "main",
+    "command": "git status --short; git branch -a; git remote -v; cat readme.txt",
+    "expected": "allow"
+  },
+  {
+    "id": "one_change_then_read",
+    "branch": "feature/test",
+    "command": "git add readme.txt && git status",
+    "expected": "allow"
+  },
+  {
+    "id": "read_then_commit_main",
+    "branch": "main",
+    "command": "git status && git commit -m update",
+    "expected": "deny"
+  },
+  {
+    "id": "two_changes",
+    "branch": "feature/test",
+    "command": "git add readme.txt && git commit -m update",
+    "expected": "deny"
+  },
+  {
+    "id": "read_pipe",
+    "branch": "main",
+    "command": "git log --oneline | head -5",
+    "expected": "allow"
+  },
+  {
+    "id": "pipe_to_interpreter",
+    "branch": "feature/test",
+    "command": "git show HEAD | python3",
+    "expected": "deny"
+  },
+  {
+    "id": "chain_with_unknown_program",
+    "branch": "feature/test",
+    "command": "python3 build.py && git status",
+    "expected": "deny"
+  },
+  {
+    "id": "checkout_new_branch",
+    "branch": "main",
+    "command": "git checkout -b feature/new",
+    "expected": "allow"
+  },
+  {
+    "id": "checkout_existing_branch",
+    "branch": "feature/test",
+    "command": "git checkout main",
+    "expected": "allow"
+  },
+  {
+    "id": "checkout_file",
+    "branch": "feature/test",
+    "command": "git checkout readme.txt",
+    "expected": "deny"
+  },
+  {
+    "id": "branch_listing_cluster",
+    "branch": "main",
+    "command": "git branch -avv",
+    "expected": "allow"
+  },
+  {
+    "id": "config_read",
+    "branch": "main",
+    "command": "git config user.name",
+    "expected": "allow"
+  },
+  {
+    "id": "config_write",
+    "branch": "main",
+    "command": "git config user.name Someone",
+    "expected": "deny"
+  }
+]
