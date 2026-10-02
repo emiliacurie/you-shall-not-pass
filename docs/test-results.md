@@ -14,7 +14,7 @@ work. Tested on Claude Code and Codex, three models each.
 - **Safety costs time.** Harness runs take ~2× longer. Fixing false alarms cut blocks by
   two thirds (45 → 14 per 15 runs) and time from 2.5× to 2×, with no loss of protection.
 - **The server is the real harness.** Branch protection, reviews and CI can't be skipped;
-  everything on a laptop can. The personal harness catches mistakes early and explains why.
+  everything on a laptop can. You Shall Not Pass catches mistakes early and explains why.
 
 ## What the harness contains
 

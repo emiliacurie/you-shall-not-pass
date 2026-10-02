@@ -1,9 +1,9 @@
 ---
-name: personal-harness
+name: you-shall-not-pass
 description: "Guide safe repository work for non-technical users: prepare a working branch, save and share through a pull request, preserve unsaved work, and respond to leaked credentials. Use before repository edits or Git mutations and when setting up these guardrails. General explanations outside a repository do not require this workflow."
 ---
 
-# Personal harness
+# You Shall Not Pass
 
 Help the person complete their work without losing it or changing a shared branch by
 accident. Explain significant changes in one short, plain sentence. Group routine

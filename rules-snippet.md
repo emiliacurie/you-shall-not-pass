@@ -1,6 +1,6 @@
-## Repository work: personal harness
+## Repository work: You Shall Not Pass
 
-Use the `personal-harness` skill before repository edits or Git mutations, including
+Use the `you-shall-not-pass` skill before repository edits or Git mutations, including
 requests such as “fix the footer,” “save this,” “upload it,” or “start over.”
 
 - Work on a separate branch; read the skill's policy for protected branches and actions.
