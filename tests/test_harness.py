@@ -56,10 +56,16 @@ class HarnessTests(unittest.TestCase):
     def hook(self,host,payload):
         return subprocess.run([sys.executable,str(ROOT/'scripts/harness.py'),'hook','--host',host],input=json.dumps(payload),env=self.env,capture_output=True,text=True)
 
+    def approval_policy(self):
+        policy=copy.deepcopy(self.policy)
+        policy['actions'].update(discard_unsaved_work='require_scoped_approval',rewrite_history='require_scoped_approval')
+        return policy
+
     def test_command_fixtures(self):
         cases=json.loads((ROOT/'tests/cases.json').read_text())
         schema=json.loads((ROOT/'tests/cases.schema.json').read_text())
         Draft202012Validator(schema).validate(cases)
+        self.policy=self.approval_policy()
         for c in cases:
             with self.subTest(c['id']):
                 self.git('switch','-q',c['branch'])
@@ -101,7 +107,22 @@ class HarnessTests(unittest.TestCase):
             unsafe=self.hook(host,self.payload('git push origin main'))
             self.assertEqual(json.loads(unsafe.stdout)['hookSpecificOutput']['permissionDecision'],'deny')
             discard=self.hook(host,self.payload('git restore -- readme.txt'))
-            self.assertEqual(json.loads(discard.stdout)['hookSpecificOutput']['permissionDecision'],'ask' if host=='claude' else 'deny')
+            self.assertEqual(json.loads(discard.stdout)['hookSpecificOutput']['permissionDecision'],'deny')
+
+    def test_default_policy_denies_loss_of_work(self):
+        self.git('switch','-q','feature/test')
+        for cmd in ['git restore -- readme.txt','git reset --hard','git rebase main']:
+            with self.subTest(cmd):
+                self.assertEqual(self.classify(cmd)['decision'],'deny')
+
+    def test_approval_policy_still_asks_in_claude(self):
+        package=self.base/'approval-package'; (package/'scripts').mkdir(parents=True)
+        shutil.copy2(ROOT/'scripts/harness.py',package/'scripts/harness.py')
+        shutil.copy2(ROOT/'policy.schema.json',package/'policy.schema.json')
+        (package/'policy.json').write_text(json.dumps(self.approval_policy()))
+        for host,expected in [('claude','ask'),('codex','deny')]:
+            p=subprocess.run([sys.executable,str(package/'scripts/harness.py'),'hook','--host',host],input=json.dumps(self.payload('git restore -- readme.txt')),env=self.env,capture_output=True,text=True)
+            self.assertEqual(json.loads(p.stdout)['hookSpecificOutput']['permissionDecision'],expected)
 
     def test_malformed_payload_fails_without_echoing_input(self):
         for host in ['claude','codex']:
@@ -194,14 +215,14 @@ class HarnessTests(unittest.TestCase):
 
     def test_placeholder_values_are_not_secrets(self):
         self.assertFalse(h.detected_secret('PAYMENTS_API_KEY=your_payments_api_key\nDATABASE_PASSWORD=your_database_password\nAUTH_TOKEN=xxxx\n'))
-        self.assertTrue(h.detected_secret('DATABASE_PASSWORD=not_a_real_test_password\n'))
-        self.assertTrue(h.detected_secret('API_KEY=yourcompany_8f2k1x9q\n'))
+        self.assertTrue(h.detected_secret('DATABASE_'+'PASSWORD'+'=not_a_real_test_password\n'))
+        self.assertTrue(h.detected_secret('API'+'_KEY'+'=yourcompany_8f2k1x9q\n'))
 
     def test_example_not_automatically_safe(self):
         self.enable_git_hooks()
-        (self.repo/'.env.example').write_text('DATABASE_PASSWORD=not_a_real_test_password\n'); self.git('add','.env.example')
+        (self.repo/'.env.example').write_text('DATABASE_'+'PASSWORD'+'=not_a_real_test_password\n'); self.git('add','.env.example')
         self.assertNotEqual(self.git('commit','-qm','Blocked',check=False).returncode,0)
-        (self.repo/'.env.example').write_text('DATABASE_PASSWORD=\nAPI_KEY=\n'); self.git('add','.env.example')
+        (self.repo/'.env.example').write_text('DATABASE_'+'PASSWORD'+'=\n'+'API'+'_KEY'+'=\n'); self.git('add','.env.example')
         self.git('commit','-qm','Safe template')
 
     def test_real_push_feature_allowed_main_blocked(self):

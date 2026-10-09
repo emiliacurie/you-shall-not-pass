@@ -46,7 +46,7 @@ def main():
                     value = json.loads(p.stdout) if p.returncode == 0 else {}
                     values.append(value.get('hookSpecificOutput', {}).get('permissionDecision', 'no_override'))
                 report['adapter_probes'][host] = values
-            report['default_policy_probes_pass'] = report['adapter_probes'] == {'claude': ['no_override', 'deny', 'ask'], 'codex': ['no_override', 'deny', 'deny']}
+            report['default_policy_probes_pass'] = report['adapter_probes'] == {'claude': ['no_override', 'deny', 'deny'], 'codex': ['no_override', 'deny', 'deny']}
         print(json.dumps(report, indent=2))
         return 0 if report['default_policy_probes_pass'] else 1
     except Exception:

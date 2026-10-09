@@ -8,8 +8,8 @@ requests such as “fix the footer,” “save this,” “upload it,” or “s
 - Keep private credentials out of commits; inspect actual staged contents.
 - Reuse specific authorization for the current task. Do not ask repeatedly for routine
   steps or an upload already requested.
-- Before discarding work, name what will be lost and obtain approval for that scope if
-  it has not already been given. A vague cleanup request or a backup is not approval.
+- Discarding work is blocked by default. Name what will be lost and give the person one
+  command to run themselves (`!` in Claude Code, a terminal in Codex).
 - Explain a block and follow the documented safe path. Do not bypass checks or edit
   the policy merely to finish a blocked operation.
 
