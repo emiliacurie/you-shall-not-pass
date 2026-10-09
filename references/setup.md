@@ -45,7 +45,7 @@ Prefer a repository-specific installation:
 python3 scripts/install.py --repo /absolute/path/to/project
 ```
 
-The installer copies the package to `~/.personal-harness`, installs its Python dependency
+The installer copies the package to `~/.you-shall-not-pass`, installs its Python dependency
 in that directory's `.venv`, validates the policy, and sets only the selected repository's
 `core.hooksPath`. It stops if a different effective hooksPath or an existing destination
 needs migration. Nothing is silently replaced. Dependency installation needs network
@@ -70,18 +70,19 @@ Inspect existing configuration first; do not remove someone else's hook configur
 
 The installer generates absolute-path snippets in:
 
-- `~/.personal-harness/integrations/claude.generated.json`
-- `~/.personal-harness/integrations/codex.generated.json`
+- `~/.you-shall-not-pass/integrations/claude.generated.json`
+- `~/.you-shall-not-pass/integrations/codex.generated.json`
 
 Merge the relevant `hooks` entries into the existing configuration without replacing
 other hooks. Example snippets are also included in `integrations/`; adjust their
 installation paths if needed.
 
 **Claude:** use `~/.claude/settings.json` or a deliberately scoped project setting.
-The adapter returns `deny` for a block and `ask` for supported destructive operations.
-The host's permission mode and approval interface determine whether that ask actually
-stops execution. In unattended tests, use a mode that denies unanswered prompts. Do
-not use a permissions-bypass mode as evidence that approval protection is functioning.
+With the default policy the adapter returns `deny` for blocks and for destructive
+operations. It returns `ask` only if the policy sets `require_scoped_approval`; the host's
+permission mode then decides, and auto mode approved an ask without prompting in our
+test. Do not use a permissions-bypass mode as evidence that approval protection works.
+Optionally, install the [escudo mod](escudo.md) to see this protection inside Claude Code.
 
 **Codex:** use `~/.codex/hooks.json` or the project's `.codex/hooks.json`. Review and
 trust new/changed hooks using `/hooks` in the CLI. Hooks needing review may be skipped;
@@ -90,12 +91,21 @@ operations. Current PreToolUse does not support `ask`: do not copy Claude's resp
 format for approval requests into Codex. Unsupported ask responses can fail and allow
 the tool call to continue.
 
-For Codex destructive work, the agent should show the exact affected files and stop.
-After reviewing the scope, the person or their developer can perform the operation in
-a human-controlled terminal. Do not disable the hook, emit an agent-created approval
-token, or reroute the action through another tool. A trusted host approval integration
-can replace this manual path in a future version; it is not implemented here. This
-limitation is confined to approval-required operations, not ordinary edits and uploads.
+### When the person really wants to discard work
+
+The guard blocks it, so the person runs it. This applies to Claude and Codex alike.
+
+1. The agent lists the exact files or branches and what each would lose, and gives the
+   single command that does it, for example `git -C /path/to/repo restore -- notes.txt`.
+2. The person reads the list. If it's right, they run the command themselves:
+   - In Claude Code: type `!`, paste the command without the `!`, press Enter.
+   - In Codex or anywhere else: paste it into a normal terminal.
+3. The agent checks the result with a read-only command such as `git status`.
+
+Commands run this way don't pass through the agent hook, and the Git hooks only check
+commits and pushes, so the person's command goes through. Do not disable the hook, emit
+an agent-created approval token, or reroute the action through another tool. This
+manual path applies only to destructive operations, not ordinary edits and uploads.
 
 **Migration:** older installations using `agent-guard.sh` without a host argument will
 block with migration guidance. Point Claude to `scripts/claude-guard.sh` and Codex to
@@ -105,7 +115,7 @@ Windsurf are not certified for this version. Do not claim they are active protec
 ## 5. Verify the installation
 
 ```sh
-~/.personal-harness/.venv/bin/python ~/.personal-harness/scripts/doctor.py --repo /project
+~/.you-shall-not-pass/.venv/bin/python ~/.you-shall-not-pass/scripts/doctor.py --repo /project
 ```
 
 The diagnostic checks policy validity, effective Git hooksPath, executable entry points,
@@ -120,8 +130,8 @@ use the team repository. Have an agent attempt these commands separately:
 1. Read status and create a working branch: these should complete.
 2. Push a local feature commit to `HEAD:main`: the guard must deny it, and the bare
    remote's main ref must remain unchanged.
-3. Restore a file containing unsaved test content: Claude must request host approval;
-   Codex must deny it. In unattended mode, the file must remain unchanged.
+3. Restore a file containing unsaved test content: both hosts must deny it with the
+   default policy, and the file must remain unchanged.
 
 Inspect host hook events as well as resulting refs/files. A model declining a command
 before trying it does not prove a hook blocked it. Also exercise a missing dependency,

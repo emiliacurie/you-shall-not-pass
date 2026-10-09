@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$HOME/.personal-harness/scripts/codex-guard.sh\""
+            "command": "\"$HOME/.you-shall-not-pass/scripts/codex-guard.sh\""
           }
         ]
       }

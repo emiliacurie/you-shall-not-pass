@@ -4,5 +4,5 @@ set -eu
 case "${1:-}" in
   --claude) exec "$(dirname "$0")/claude-guard.sh" ;;
   --codex) exec "$(dirname "$0")/codex-guard.sh" ;;
-  *) echo "Blocked by personal harness: use claude-guard.sh or codex-guard.sh; see references/setup.md." >&2; exit 2 ;;
+  *) echo "Blocked by You Shall Not Pass: use claude-guard.sh or codex-guard.sh; see references/setup.md." >&2; exit 2 ;;
 esac

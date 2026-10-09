@@ -16,7 +16,7 @@ def main():
     scope = p.add_mutually_exclusive_group(required=True)
     scope.add_argument('--repo', type=Path, help='Configure hooks for this repository only')
     scope.add_argument('--global', dest='global_scope', action='store_true', help='Explicitly configure hooks for every repository')
-    p.add_argument('--destination', type=Path, default=Path.home()/'.personal-harness')
+    p.add_argument('--destination', type=Path, default=Path.home()/'.you-shall-not-pass')
     a = p.parse_args()
     dest = a.destination.expanduser().resolve()
     if a.repo:

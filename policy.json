@@ -15,7 +15,7 @@
     "skip_checks": "deny",
     "commit_env_file": "deny",
     "commit_detected_secret": "deny",
-    "discard_unsaved_work": "require_scoped_approval",
-    "rewrite_history": "require_scoped_approval"
+    "discard_unsaved_work": "deny",
+    "rewrite_history": "deny"
   }
 }

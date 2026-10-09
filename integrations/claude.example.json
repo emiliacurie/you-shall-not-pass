@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$HOME/.personal-harness/scripts/claude-guard.sh\""
+            "command": "\"$HOME/.you-shall-not-pass/scripts/claude-guard.sh\""
           }
         ]
       }

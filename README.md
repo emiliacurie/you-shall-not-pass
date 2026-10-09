@@ -1,14 +1,61 @@
-# oops-proof
+# You Shall Not Pass
 
 ![You Shall Not Pass: a guardrail for AI coding agents](docs/banner.jpg)
 
-A personal harness for AI coding agents. The skill inside is named `you-shall-not-pass`.
+A guardrail for AI coding agents.
 
 **What it does for you:** when you ask an AI coding agent to "fix the footer" or "upload
 it", the agent works on its own branch and opens a pull request instead of changing the
 team's shared branch. It also keeps secrets like `.env` out of commits and stops before
 deleting unsaved work. It's tested on Claude Code and Codex. A developer installs it
 once; after that it works in the background.
+
+## What changes when you install it
+
+The skill works on three levels. Some rules are locked: the agent can't break them, even
+if you ask. Some protect work you haven't saved yet. The rest are habits the agent
+follows because the skill tells it to, but nothing forces them.
+
+**🔒 Always blocked.** Protected branches are `main`, `master`, `develop`, `production`,
+`release` and the repo's default branch.
+
+| The agent won't | Why |
+|---|---|
+| Save (commit), upload (push) or merge into a protected branch | Changes reach the team through a reviewed pull request |
+| Edit files while you're on a protected branch | It moves to a working branch first |
+| Force-push or delete a branch on GitHub | Both can erase other people's work |
+| Skip checks (`--no-verify`) | The checks are the safety net |
+| Commit `.env` or anything that looks like a password or key | Once uploaded, a secret stays in the history |
+
+**✋ Protects unsaved work.** These can lose work, so they're blocked too. Asking
+instead isn't safe by default: Claude Code's auto mode approves the question on its own.
+If you really want to delete something, the agent lists what would be lost and gives
+you one command. In Claude Code, type `!`, paste the command, and press Enter; in
+Codex, paste it into a terminal.
+
+| Action | Examples |
+|---|---|
+| Discard unsaved work | "start over", "clean this up", deleting files |
+| Rewrite history | rebasing, editing the last commit, deleting a branch |
+
+**📖 Habits it follows.** It creates its own branch for each task. When you say "upload
+it", it pushes that branch and opens a pull request; it won't ask again for each step. It
+saves only the files that belong to the task and explains what it did in plain words.
+Opening a pull request is never permission to merge it.
+
+**What you'll notice:** the agent is about 2× slower, because it runs some commands one at
+a time. When something is blocked, you'll see `Blocked by You Shall Not Pass:` and the
+reason, and the agent will take the safe route instead. In Claude Code, the optional
+[escudo mod](references/escudo.md) shows the protection, explains blocks in plain Spanish
+and keeps a history.
+
+**What it doesn't do:** it doesn't replace protection on GitHub itself (required reviews,
+protected branches); everything on your computer can be skipped. It doesn't stop the
+agent from *reading* `.env`. See [known issues](#known-issues).
+
+**Changing a rule:** edit `policy.json`. Each rule is `deny` or `allow`; the two unsaved-
+work rules can be `require_scoped_approval` instead, so Claude asks. Only choose that if
+your permission mode actually stops to ask. Change it on purpose, not to get past a block.
 
 A workflow and local guardrails for people who are not developers working with an AI
 agent in a Git repository. Markdown explains the workflow. A versioned policy plus
@@ -56,6 +103,8 @@ agent integrations are not verified for this version. See setup for migration.
   retry them as separate commands, which costs time.
 - Secret detection uses a small set of patterns. It can miss formats and flag values
   that look like real secrets. Leave `.env.example` values empty or use `your_...`.
-- Codex can't ask for approval, so cleanup that would discard work is blocked there.
+- Cleanup that would discard work is blocked by default, so the person runs it with `!`.
+- Git actions outside a repository (`git init`, `git clone`) are refused; the person
+  runs them, also with `!`.
 
 MIT License. See [LICENSE](LICENSE).

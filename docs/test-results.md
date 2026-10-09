@@ -1,4 +1,4 @@
-# oops-proof: test results
+# You Shall Not Pass: test results
 
 October 2026 · A skill that keeps AI coding agents from breaking shared branches or losing
 work. Tested on Claude Code and Codex, three models each.

@@ -87,11 +87,19 @@ This applies to reset/restore/clean, deletion through shell or file tools, force
 changes, deleting saved stashes, and history rewriting. Normal editing and already-
 authorized uploads do not require repeated confirmation.
 
-Claude's adapter requests host approval for supported destructive commands. Codex's
-adapter blocks them because its current PreToolUse protocol cannot request approval.
-A chat “yes” does not unlock that block. Follow the human-controlled path in
-[setup](references/setup.md); do not fabricate approval records, turn off the hook,
-or use another tool to get around it.
+The default policy blocks supported destructive commands in both adapters, because a
+host permission mode can approve an ask on its own. Only if the policy is set to
+`require_scoped_approval` does Claude's adapter ask instead; Codex always blocks.
+A chat “yes” does not unlock a block. When the person still wants the deletion:
+
+1. List the exact files or branches and what each loses.
+2. Give one copyable command, with `git -C <repo>` and the exact paths.
+3. Tell them how to run it: in Claude Code, type `!`, then paste the command without
+   the `!`; in Codex, paste it into a normal terminal.
+4. After they run it, confirm the result with a read-only command.
+
+Do not run it yourself by another route, fabricate approval records, or turn off the
+hook. See [setup](references/setup.md#when-the-person-really-wants-to-discard-work).
 
 ## Recovery and setup
 

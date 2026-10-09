@@ -1,6 +1,22 @@
 # Validation of this revision
 
-2026-10-02. All tests use disposable repositories, local bare remotes and synthetic
+## 2026-10-09 update: default deny for loss of work, escudo mod
+
+- Real installation on one Mac (global Git hooks, Claude Code 2.1.295 hook). Live test in
+  a disposable repo with a local bare remote: branch creation passed; push to main,
+  `git restore` and `git reset --hard` were denied; the remote and the file were unchanged.
+- Finding: with `require_scoped_approval`, Claude Code's auto mode approved the `ask` for
+  `git restore` without prompting and the unsaved line was lost. The default policy now
+  denies both loss-of-work actions.
+- 29 unittest methods pass: fixtures still run under an explicit approval policy, plus
+  tests for the new default deny and for Claude still asking under the approval policy.
+- Escudo mod: 12 tests pass; live blocks produced the Spanish toast and history entries.
+- Not verified: a person approving a Claude prompt in a non-auto mode, Codex after the
+  change, other machines.
+
+## 2026-10-02
+
+All tests use disposable repositories, local bare remotes and synthetic
 credentials. No live team repository or global hook configuration was changed.
 
 - Policy validation and Codex skill frontmatter validation passed.

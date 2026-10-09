@@ -34,7 +34,7 @@ def main():
                 report['current_branch_protected'] = not branch or branch in protected
             except harness.GuardError:
                 report['base_branch_resolved'] = False
-        with tempfile.TemporaryDirectory(prefix='personal-harness-doctor-') as folder:
+        with tempfile.TemporaryDirectory(prefix='you-shall-not-pass-doctor-') as folder:
             env = os.environ.copy()
             env.update(GIT_CONFIG_GLOBAL=os.devnull, GIT_CONFIG_NOSYSTEM='1')
             subprocess.run(['git', 'init', '-q', '--initial-branch=main', folder], env=env, check=True)
@@ -46,7 +46,7 @@ def main():
                     value = json.loads(p.stdout) if p.returncode == 0 else {}
                     values.append(value.get('hookSpecificOutput', {}).get('permissionDecision', 'no_override'))
                 report['adapter_probes'][host] = values
-            report['default_policy_probes_pass'] = report['adapter_probes'] == {'claude': ['no_override', 'deny', 'ask'], 'codex': ['no_override', 'deny', 'deny']}
+            report['default_policy_probes_pass'] = report['adapter_probes'] == {'claude': ['no_override', 'deny', 'deny'], 'codex': ['no_override', 'deny', 'deny']}
         print(json.dumps(report, indent=2))
         return 0 if report['default_policy_probes_pass'] else 1
     except Exception:

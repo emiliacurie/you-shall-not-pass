@@ -10,11 +10,13 @@ unbreakable or label every tool supported because its configuration resembles an
 | Git pre-push | Actual destination refs, deletion, ancestry of proposed update | Local hooks can be skipped; no comprehensive scan of previously committed history |
 | Agent shell check | Simple Git commands, `git -C`, explicit pushes, shared-branch merges, supported cleanup/history commands, skip-check flags | Does not evaluate arbitrary programs, Git aliases, every option abbreviation, or general shell semantics |
 | Agent edit check | Known file-edit tools and patch target paths on shared/detached branches | Shell/Python file writes and other tool paths are not a complete protected-file boundary |
-| Claude adapter | No permission override for safe calls, deny for blocks, ask for scoped approval | Host permission mode/UI determines what happens to ask; test that it actually stops unattended work |
+| Claude adapter | No permission override for safe calls, deny for blocks; ask only when the policy sets `require_scoped_approval` | Host permission mode decides an ask: auto mode approved `git restore` without prompting (Claude Code 2.1.295), so the default policy denies |
 | Codex adapter | No override for safe calls, deny for blocks and approval-required operations | No native ask response is emitted; a chat approval does not unlock a deny |
+| Escudo mod (optional) | Shows branch protection, explains blocks, keeps a history | Claude Code only; observes the guard's decisions and never makes one |
 | Doctor | Valid policy, effective Git hooksPath, executable hooks, isolated adapter probes | Cannot prove the running agent loaded hooks, or verify server restrictions |
 
-Unsupported state-changing Git commands are refused. A chain may hold one Git change
+Unsupported state-changing Git commands are refused, including Git actions outside a
+repository (`git init`, `git clone`) and `--git-dir` overrides. A chain may hold one Git change
 plus read-only commands (Git inspection, `cat`, `grep`, `head` and similar); chains of
 several changes are refused. Quoted multi-line commit messages and heredoc messages with
 a quoted delimiter are read as literal text.
